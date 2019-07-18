@@ -1,23 +1,17 @@
 pipeline {
-    agent any 
-    stages {
-        stage('master') { 
+    agent {
+        docker {
+           image 'maven:3-alpine'
+           args '-v /root/.m2:/root/ .m2'
+         }  
+     }
+     stages {
+         stage('build') { 
             steps {
-                echo 'Taking code fron Git hub' 
-                git "https://github.com/padhmaja/kalyann.git"
-                echo 'code taken'
-            }
-        }
-        stage('build') { 
-            steps {
-                echo 'creating text file'
-                writeFile file: 'demo.txt',text: 'Working with files the Groovy way is easy.'
-            }
-        }
-        stage('Deploy') { 
-            steps {
-                echo 'deploying to container' 
-            }
-        }
+                sh 'mvn -B -Dskiptests clean package'
+             }
+         }
     }
 }
+   
+        
